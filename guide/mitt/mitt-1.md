@@ -1,6 +1,6 @@
 ### 第八期 | mitt
 
-本期源码笔记是第八期。通过阅读和调试`src/index.ts`和`test/index_test.ts`，熟悉了`mitt`是订阅/发布事件的整个流程，在调试`test/index/index_test.ts`的过程中对对前端单元测试中用到的断言库`chai`、辅助工具`Sinon`和`sinon-chai`有了初步的了解，在阅读和调试`src/index.ts`的过程中，对`typescript`的一些常用语法加深了印象。另外，在移除事件处理程序中用到了`>>>`位运算符，使用 `>>> 0`可以实现取整和将负数转为非负整数。
+本期源码笔记是第八期。通过阅读和调试`src/index.ts`和`test/index_test.ts`，熟悉了`mitt`订阅/发布事件的整个流程，在调试`test/index/index_test.ts`的过程中对对前端单元测试中用到的断言库`chai`、辅助工具`Sinon`和`sinon-chai`有了初步的了解，在阅读和调试`src/index.ts`的过程中，对`typescript`的一些常用语法加深了印象。另外，在移除事件处理程序中用到了`>>>`位运算符，使用 `>>> 0`可以实现取整和将负数转为非负整数。
 
 #### 一、初识mitt
 

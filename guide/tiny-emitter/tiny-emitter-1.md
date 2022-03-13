@@ -1,3 +1,7 @@
+### 第八期 | tiny-emitter
+
+本期源码笔记是第八期第二部分`tiny-emitter`。通过阅读和调试`tiny-mitter/test/index.js`和`tiny-emittter/index.js`，熟悉了`tiny-emitter`订阅/发布事件的整个流程。它其实与前面阅读的`mitt`订阅/发布事件的流程是类似的，比如都有`on`、`emit`和`off`方法，分别对应订阅事件、触发订阅事件和取消订阅事件。不同的是，`tiny-emitter`还多了一个`once`方法，用于处理某个事件只需要订阅一次的情况。因为它们有许多相似之处，有了`mitt`的基础，在阅读`tiny-emitter`的源码时，会稍微容易一些。
+
 #### 一、初识tiny-emitter
 
 ##### 1、tiny-emitter是什么？
@@ -350,8 +354,141 @@ test('exports an instance', function (t) {
 
 #### 三、tiny-emittter/index.js
 
-#### 四、tiny-emitter/index.d.ts
+##### 1、定义一个`function`
 
-#### 五、收获
+```javascript
+function E () {
+}
+```
 
+##### 2、在`function`的`prototype`对象上添加方法
 
+```javascript
+E.prototype = {
+  on: function (name, callback, ctx) {
+  },
+
+  once: function (name, callback, ctx) {
+  },
+
+  emit: function (name) {
+  },
+
+  off: function (name, callback) {
+  }
+};
+```
+
+##### 3、对外暴露
+
+```javascript
+module.exports = E;
+module.exports.TinyEmitter = E;
+```
+
+##### 4、`on`方法
+
+先判断`this.e[name]`是否有值，如果有值则将传入的`name`,`callback`放入对应的`map`中。如果`name`已经存在，则继续放入。
+
+```javascript
+E.prototype = {
+  on: function (name, callback, ctx) {
+    var e = this.e || (this.e = {});
+
+    (e[name] || (e[name] = [])).push({
+      fn: callback,
+      ctx: ctx
+    });
+
+    return this;
+  },
+}
+```  
+
+![tiny-emitter-3](../../images/tiny-emitter/tiny-emitter-3.jpg)
+
+![tiny-emitter-4](../../images/tiny-emitter/tiny-emitter-4.gif)
+
+##### 5、`once`方法
+
+订阅只执行一次。
+
+第一步，声明一个回调函数，回调函数中调用移除订阅的`off`方法；
+
+第二步，调用生成订阅的`on`方法，此时将回调函数传入；
+
+第三步，调用`emit`方法的时候，执行回调函数，移除订阅；
+
+第四步，再次调用`emit`方法时，因为`evtArr`的数组为空，不执行后续操作。 
+
+```javascript
+E.prototype = {
+  once: function (name, callback, ctx) {
+    // 此处先定义一个 self 变量，将this的值赋给它，方便后续在listener方法中获取外层的this对象
+    // 并调用off方法，移除订阅
+    var self = this;
+    function listener () {
+      self.off(name, listener);
+      callback.apply(ctx, arguments);
+    };
+
+    listener._ = callback
+    return this.on(name, listener, ctx);
+  },
+}
+``` 
+
+![tiny-emitter-5](../../images/tiny-emitter/tiny-emitter-5.gif)
+
+##### 6、`emit`方法
+
+如果不是`once`，则会直接调用`on`时传入的`callback`函数；如果是`once`，由于调用`on`方法时传入的`callback`是一个`listener`函数，在listener函数中先执行了`off`方法，再执行调用`once`时传入的`callback`函数。
+
+```javascript
+E.prototype = {
+  emit: function (name) {
+    var data = [].slice.call(arguments, 1);
+    var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
+    var i = 0;
+    var len = evtArr.length;
+
+    for (i; i < len; i++) {
+      // 此处调用 回调函数
+      evtArr[i].fn.apply(evtArr[i].ctx, data);
+    }
+
+    return this;
+  },
+}
+``` 
+
+##### 7、`off`方法
+
+`off`方法用于移除订阅。
+
+第一步，先判断对应名称的`evts`和`callback`是否存在；
+
+第二步，遍历`evts`，判断`fn`或`fn._`是否与`callback`严格相等，如果不是，则放入另外一个数组中，这个数组用于替换原先的`evts`，同时将原先的`evts`删除。
+
+```javascript
+E.prototype = {
+   off: function (name, callback) {
+    var e = this.e || (this.e = {});
+    var evts = e[name];
+    var liveEvents = [];
+
+    if (evts && callback) {
+      for (var i = 0, len = evts.length; i < len; i++) {
+        if (evts[i].fn !== callback && evts[i].fn._ !== callback)
+          liveEvents.push(evts[i]);
+      }
+    }
+
+    (liveEvents.length)
+      ? e[name] = liveEvents
+      : delete e[name];
+
+    return this;
+  }
+}
+``` 

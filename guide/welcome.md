@@ -32,5 +32,8 @@
     - [mitt-1](guide/mitt/mitt-1.md) 
 
 - tiny-emitter
-    - [tiny-emitter-1](guide/tiny-emitter/tiny-emitter-1.md)     
+    - [tiny-emitter-1](guide/tiny-emitter/tiny-emitter-1.md)    
+
+- vue
+    - [vue events](guide/vue/events.md)  
 ```

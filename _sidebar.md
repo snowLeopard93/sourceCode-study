@@ -28,4 +28,7 @@
     - [tiny-emitter-1](guide/tiny-emitter/tiny-emitter-1.md)    
 
 - vue
-    - [vue events](guide/vue/events.md)     
+    - [vue events](guide/vue/events.md)  
+
+- yeoman
+    - [configstore](guide/yeoman/configstore.md)  

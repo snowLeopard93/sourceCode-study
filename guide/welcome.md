@@ -36,4 +36,7 @@
 
 - vue
     - [vue events](guide/vue/events.md)  
+
+- yeoman
+    - [configstore](guide/yeoman/configstore.md)  
 ```

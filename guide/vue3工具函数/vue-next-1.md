@@ -6,6 +6,8 @@
 
 本篇源码笔记是第二期，通过阅读和调试`vue-next/packages/shared/src/index.ts`，结合【若川】和【纪年】写的源码笔记，熟悉了vue3中使用到的一些工具函数，这些工具函数本身并不复杂，但对自己工作中简化工具类帮助还是蛮大的。
 
+![【源码】vue-devtools](../../images/思维导图/【源码】vue-devtools.png)
+
 ### 一、前置
 
 #### 1、下载源码
@@ -113,7 +115,7 @@ export const isModelListener = (key: string) => key.startWith('onUpdate:')
 **（8）extend：** 合并对象
 
 ```typescript
-export const extend = Object.assign 
+export const extend = Object.assign
 ```
 
 **（9）remove：** 移除数组中的某个元素
@@ -146,7 +148,7 @@ export const isArray = Array.isArray
 **（12）isMap：** 判断是否是Map
 
 ```typescript
-export const isMap = (vak: unknown): val is Map<any, any> => 
+export const isMap = (vak: unknown): val is Map<any, any> =>
  toTypeString(val) === '[object Map]'
 
 // 示例：
@@ -159,7 +161,7 @@ console.log(Object.prototype.String.call(map)) // '[object Map]'
 **（13）isSet：** 判断是否是Set
 
 ```typescript
-export const isSet = (val: unknown): val is Set<any> => 
+export const isSet = (val: unknown): val is Set<any> =>
  toTypeString(val) === '[object Set]'
 ```
 
@@ -172,7 +174,7 @@ export const isDate = (val: unknown): val is Date => val instancof Date
 **（15）isFunction：** 判断是否是Function
 
 ```typescript
-export const isFunction = (val: unknown): val is Function => 
+export const isFunction = (val: unknown): val is Function =>
    typeof val === 'function'
 ```
 
@@ -209,7 +211,7 @@ export const isPromise = <T = any>(val: unknown): val is Promise<T> => {
 
 ```typescript
 export const objectToString = Object.prototype.toString
-export const toTypeString = (value: unknown): string => 
+export const toTypeString = (value: unknown): string =>
     objectToString.call(value)
 
 // 示例：
@@ -229,8 +231,8 @@ export const toRawType = (value: unknown): string => {
 **（22）isPlainObject：** 判断是否是普通对象
 
 ```typescript
-export const isPlainObject = (val: unknown): string => 
-    toTypeString(val) === '[object Object]' 
+export const isPlainObject = (val: unknown): string =>
+    toTypeString(val) === '[object Object]'
 ```
 
 **（23）isIntegerKey：** 判断`key`值是否是整数
@@ -251,7 +253,7 @@ export const isReservedProp = /*#__PURE__*/ makeMap(
     // the leading column is intentional so empty string "" is also included
     ',key,ref' +
         'onVnodeBeforeMount,onVnodeMounted,' +
-        'onVnodeBeforeUpdate,onVnodeUpdated,' + 
+        'onVnodeBeforeUpdate,onVnodeUpdated,' +
         'onVnodeBeforeUnmount,onVnodeUnmounted'
 )
 ```
@@ -281,7 +283,7 @@ export const camelize = cacheStringFunction((str: string): string => {
 
 ```typescript
 const hyphenateRE = /\B([A-Z])/g
-export const hyphenate = cacheStringFunction((str: string) => 
+export const hyphenate = cacheStringFunction((str: string) =>
     str.replace(hyphenateRE, '-$`).toLowerCase()
 )
 ```
@@ -347,7 +349,7 @@ let _globalThis: any
 export const getGlobalThis = (): any => {
     return {
         _globalThisL ||
-        (_globalThis = 
+        (_globalThis =
             typeof globalThis !== 'undefined'
             ? globalThis
             : typeof self !== 'undefined'

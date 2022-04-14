@@ -6,6 +6,8 @@
 
 本篇源码笔记是第三期，通过阅读和调试`vue-next/scripts/release.js`，熟悉了`vue-release`的大致发布流程，包括确认版本、执行测试用例、更新依赖、生成日志、发布包和推送到GitHub等步骤。自己比较独立的看完了，虽然有些细节的地方被自己遗漏了，但自己看完之后再结合【若川】和【纪年】的笔记补漏，感觉收获蛮多的。
 
+![【源码】vue-release](../../images/思维导图/【源码】vue-release.png)
+
 ![vue-next_scripts_release](../../images/vue-release/vue-next_scripts_release.js.png)
 
 [幕布 vue-next/scripts/release.js](https://mubu.com/doc/1y9IUWuG3TH)
@@ -44,7 +46,7 @@ yarn build
 
 打开`package.json`，然后搜索`scripts`，在它的上方有个“调试”（或是`Debug`）按钮，点击它，然后搜索需要断点调试的js文件，点击它即可，
 
-**注意：** 
+**注意：**
 
 （1）vscode版本过低可能没有调试按钮，将vscode升级到最新版本即可，
 
@@ -128,7 +130,7 @@ Pushing to GitHub
 
 用到了`semver`库
 
-**（2）执行测试用例** 
+**（2）执行测试用例**
 
 用到了`execa`库
 
@@ -188,7 +190,7 @@ async function main() {
         name: 'yes',
         message: `Releasing v${targetVersion}. Confirm?`
     })
-    
+
     if (!yes) {
         return
     }
@@ -390,7 +392,7 @@ const { prompt } = require('enquirer')
 // 用于执行脚本命令
 const execa = require('execa')
 ```
-#### 7、其他常量 
+#### 7、其他常量
 
 ```javascript
 const currentVersion = require('../package.json').version

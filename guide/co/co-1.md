@@ -24,6 +24,8 @@
 
 由于自己对`co`比较陌生，虽然通过断点逐步调试，了解了`co`是如何使用的，但对`co`的作用和原理还理解不够透彻，需要慢慢吸收。
 
+![【源码】co](../../images/思维导图/【源码】co.png)
+
 ### 前置知识
 
 #### 1、`构造函数`和`原型`
@@ -46,7 +48,7 @@
 
 ### 一、初识co
 
-`Readme.md` 
+`Readme.md`
 
 #### 1、使用co
 
@@ -73,7 +75,7 @@ fn(true).then(function(val) {
 
 #### 2、平台支持
 
-**（1）`node < 0.11`** 
+**（1）`node < 0.11`**
 
 需要实现`Promise`
 
@@ -83,7 +85,7 @@ fn(true).then(function(val) {
 
 **（3）`node = 0.11.x`**
 
-必须使用`--harmony-generators` flag 或是`--harmony` 
+必须使用`--harmony-generators` flag 或是`--harmony`
 
 #### 3、安装co
 
@@ -239,7 +241,7 @@ function isGenerator (obj) {
 
 ##### （3）`isGeneratorFunction`
 
-**判断是否是`generator Function`：** 
+**判断是否是`generator Function`：**
 
 **依据1：** `obj.constructor.name`或`obj.constructor.displayName`的值是`GeneratorFunction`；
 

@@ -14,6 +14,8 @@
 
 **【yeoman/update-notifier】：** https://github.com/yeoman/update-notifier.git
 
+![【源码】update-notifier](../../images/思维导图/【源码】update-notifier.png)
+
 #### 一、安装及调用
 
 ##### 1、安装

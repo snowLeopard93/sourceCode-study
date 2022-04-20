@@ -20,6 +20,8 @@ return Promise.resolve(fn(context, dispatch.bind(null, i + 1)))
 
 **【学习代码仓库地址】：** https://github.com/lxchuan12/koa-compose-analysis.git
 
+![【源码】koa-compose](../../images/思维导图/【源码】koa-compose.png)
+
 ### 前置知识
 
 #### 1、什么是koa-compose？

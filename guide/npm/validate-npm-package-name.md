@@ -12,6 +12,8 @@
 
 （4）在对入参进行判断时，为了使返回的提示信息更加清晰，可以分开判断，如依次判断是否是`null`、是否是`undefined`、是否是`string`类型、是否是空字符串、是否有前后空格等。
 
+![【源码】validate-npm-package-name](../../images/思维导图/【源码】validate-npm-package-name.png)
+
 #### 一、前置
 
 ##### 1、克隆代码
@@ -117,7 +119,7 @@ validForNewPackages：true，validForOldPackages：true
 
 validForNewPackages：true，validForOldPackages：true
 
-**（6）crazy!**（含有特殊字符!） 
+**（6）crazy!**（含有特殊字符!）
 
 validForNewPackages：false，validForOldPackages：true
 
@@ -221,7 +223,7 @@ if (!name.length) {
 
 if (name.match(/^\./)) {
     errors.push('name cannot start with a period')
-} 
+}
 
 if (name.match(/^_/)) {
     errors.push('name cannot start with an underscore')

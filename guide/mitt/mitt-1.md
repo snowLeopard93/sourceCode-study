@@ -2,6 +2,8 @@
 
 本期源码笔记是第八期。通过阅读和调试`src/index.ts`和`test/index_test.ts`，熟悉了`mitt`订阅/发布事件的整个流程，在调试`test/index/index_test.ts`的过程中对对前端单元测试中用到的断言库`chai`、辅助工具`Sinon`和`sinon-chai`有了初步的了解，在阅读和调试`src/index.ts`的过程中，对`typescript`的一些常用语法加深了印象。另外，在移除事件处理程序中用到了`>>>`位运算符，使用 `>>> 0`可以实现取整和将负数转为非负整数。
 
+![【源码】mitt](../../images/思维导图/【源码】mitt.png)
+
 #### 一、初识mitt
 
 ##### 1、mitt是什么？
@@ -161,7 +163,7 @@ describe('mitt#', () => {
         events = new Map();
         inst = mitt(events);
     })
-    
+
     describe('properties', () => {
         it('should expose the event handler map', () => {
             expect(inst)
@@ -418,7 +420,7 @@ describe('emit()', () => {
 export default function mitt<Events extends Record<EventType, unknown>>(
     all?: EventHandlerMap<Events>
 ): Emitter<Events> {
-    type GenericEventHandler = 
+    type GenericEventHandler =
         | Handler<Events[keyof Events]>
         | WildcardHandler<Events>;
     all = all || new Map();
@@ -537,7 +539,7 @@ export type Handler<T = unknown> = (event: T) => void;
 
 // 将一个有两个入参，无返回值的函数，起个新名字叫 WildcardHandler，其中 T 的类型是 Record<string, unknown>
 // 可以理解为 第一个是 key 的类型，第二个是 value 的类型
-// keyof T 是 索引类型查询操作符，表示取出 T 中所有的属性 
+// keyof T 是 索引类型查询操作符，表示取出 T 中所有的属性
 export type WildcardHandler<T = Record<string, unknown>> = (
     type: keyof,
     event: T[keyof T]
@@ -616,13 +618,13 @@ interface EmployeeType {
     fullname: string
     role: string
 }
- 
+
 let employees: Record<number, EmployeeType> = {
     0: { id: 1, fullname: "John Doe", role: "Designer" },
     1: { id: 2, fullname: "Ibrahima Fall", role: "Developer" },
     2: { id: 3, fullname: "Sara Duckson", role: "Developer" },
 }
- 
+
 // 0: { id: 1, fullname: "John Doe", role: "Designer" },
 // 1: { id: 2, fullname: "Ibrahima Fall", role: "Developer" },
 // 2: { id: 3, fullname: "Sara Duckson", role: "Developer" }

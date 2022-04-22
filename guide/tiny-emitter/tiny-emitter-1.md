@@ -2,6 +2,8 @@
 
 本期源码笔记是第八期第二部分`tiny-emitter`。通过阅读和调试`tiny-mitter/test/index.js`和`tiny-emittter/index.js`，熟悉了`tiny-emitter`订阅/发布事件的整个流程。它其实与前面阅读的`mitt`订阅/发布事件的流程是类似的，比如都有`on`、`emit`和`off`方法，分别对应订阅事件、触发订阅事件和取消订阅事件。不同的是，`tiny-emitter`还多了一个`once`方法，用于处理某个事件只需要订阅一次的情况。因为它们有许多相似之处，有了`mitt`的基础，在阅读`tiny-emitter`的源码时，会稍微容易一些。
 
+![【源码】tiny-emitter](../../images/思维导图/【源码】tiny-emitter.png)
+
 #### 一、初识tiny-emitter
 
 ##### 1、tiny-emitter是什么？
@@ -28,9 +30,9 @@ $ npm install tiny-emitter --save
 
 ```javascript
 var Emittter = require('tiny-emitter');
-var emitter = new Emitter(); 
+var emitter = new Emitter();
 emitter.on('some-event', function(arg1, arg2, arg3) {
-    // 
+    //
 })
 emitter.emit('some-event', 'arg1 value', 'arg2 value', 'arg3 value');
 ```
@@ -40,7 +42,7 @@ emitter.emit('some-event', 'arg1 value', 'arg2 value', 'arg3 value');
 ```javascript
 var emitter = require('tiny-emitter/instance');
 emitter.on('some-event', function(arg1, arg2, arg3) {
-    // 
+    //
 })
 emitter.emit('some-event', 'arg1 value', 'arg2 value', 'arg3 value');
 ```
@@ -403,7 +405,7 @@ E.prototype = {
     return this;
   },
 }
-```  
+```
 
 ![tiny-emitter-3](../../images/tiny-emitter/tiny-emitter-3.jpg)
 
@@ -419,7 +421,7 @@ E.prototype = {
 
 第三步，调用`emit`方法的时候，执行回调函数，移除订阅；
 
-第四步，再次调用`emit`方法时，因为`evtArr`的数组为空，不执行后续操作。 
+第四步，再次调用`emit`方法时，因为`evtArr`的数组为空，不执行后续操作。
 
 ```javascript
 E.prototype = {
@@ -436,7 +438,7 @@ E.prototype = {
     return this.on(name, listener, ctx);
   },
 }
-``` 
+```
 
 ![tiny-emitter-5](../../images/tiny-emitter/tiny-emitter-5.gif)
 
@@ -460,7 +462,7 @@ E.prototype = {
     return this;
   },
 }
-``` 
+```
 
 ##### 7、`off`方法
 
@@ -491,4 +493,4 @@ E.prototype = {
     return this;
   }
 }
-``` 
+```

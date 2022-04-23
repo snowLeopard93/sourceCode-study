@@ -19,6 +19,9 @@ this.config = new ConfigStore(`update-notifier-${this.packageName}`, {
 **【yeoman/update-notifier】：** https://github.com/yeoman/update-notifier.git
 
 **【yeoman/configstore】：** https://github.com/yeoman/configstore.git
+
+![【源码】configstore](../../images/思维导图/【源码】configstore.png)
+
 #### 一、基本使用
 
 ##### 1、克隆代码

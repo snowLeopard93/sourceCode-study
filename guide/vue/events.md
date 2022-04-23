@@ -2,6 +2,8 @@
 
 本期源码笔记是第八期第三部分，主要是结合阅读[vue events.js](https://github.com/vuejs/vue/blob/dev/src/core/instance/events.js)源码，对事件发布订阅做一个简单的梳理。
 
+![【源码】Vue Events](../../images/思维导图/【源码】VueEvents.png)
+
 ### 一、core/instance/events.js
 
 #### 1、initEvents

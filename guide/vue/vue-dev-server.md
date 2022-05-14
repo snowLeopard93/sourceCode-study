@@ -1,6 +1,6 @@
 ### 第十一期 | vue-dev-server
 
-![【源码】vue-dev-server](../../images/vue/【源码】vue-dev-server.png)
+![【源码】vue-dev-server](../../images/sourceCode-vue/【源码】vue-dev-server.png)
 
 #### 一、Vite
 
@@ -46,7 +46,7 @@ app.listen(3000, () => {
 
 #### 四、middleware.js
 
-![【源码】vue-dev-server代码依赖之middleware](../../images/vue/【源码】vue-dev-server代码依赖之middleware.js.png)
+![【源码】vue-dev-server代码依赖之middleware](../../images/sourceCode-vue/【源码】vue-dev-server代码依赖之middleware.js.png)
 
 ```js
 const vueCompiler = require('@vue/component-compiler')
@@ -211,11 +211,11 @@ async function bundleSFC(req) {
 }
 ```
 
-![vue-dev-server-5](../../images/vue/vue-dev-server-5.jpg)
+![vue-dev-server-5](../../images/sourceCode-vue/vue-dev-server-5.jpg)
 
-![vue-dev-server-6](../../images/vue/vue-dev-server-6.jpg)
+![vue-dev-server-6](../../images/sourceCode-vue/vue-dev-server-6.jpg)
 
-![vue-dev-server-7](../../images/vue/vue-dev-server-7.jpg)
+![vue-dev-server-7](../../images/sourceCode-vue/vue-dev-server-7.jpg)
 
 ##### 8、return
 
@@ -229,9 +229,9 @@ async function bundleSFC(req) {
 
 （3）得到结果之后，调用`send`方法，将其转换成`javascript`。
 
-![【源码】vue-dev-server代码依赖之middleware.js-vue](../../images/vue/【源码】vue-dev-server代码依赖之middleware.js-vue.png)
+![【源码】vue-dev-server代码依赖之middleware.js-vue](../../images/sourceCode-vue/【源码】vue-dev-server代码依赖之middleware.js-vue.png)
 
-![vue-dev-server-1](../../images/vue/vue-dev-server-1.jpg)
+![vue-dev-server-1](../../images/sourceCode-vue/vue-dev-server-1.jpg)
 
 **情况2：请求的路径以'.js'结尾**
 
@@ -241,9 +241,9 @@ async function bundleSFC(req) {
 
 （3）得到结果之后，调用`send`方法，将其转换成`javascript`。
 
-![【源码】vue-dev-server代码依赖之middleware.js-js](../../images/vue/【源码】vue-dev-server代码依赖之middleware.js-js.png)
+![【源码】vue-dev-server代码依赖之middleware.js-js](../../images/sourceCode-vue/【源码】vue-dev-server代码依赖之middleware.js-js.png)
 
-![vue-dev-server-2](../../images/vue/vue-dev-server-2.jpg)
+![vue-dev-server-2](../../images/sourceCode-vue/vue-dev-server-2.jpg)
 
 **情况3：请求的路径以'/__modules/'结尾**
 
@@ -255,11 +255,11 @@ async function bundleSFC(req) {
 
 （4）如果不满足条件，则调用`next()`，执行下一个。
 
-![【源码】vue-dev-server代码依赖之middleware.js-modules](../../images/vue/【源码】vue-dev-server代码依赖之middleware.js-modules.png)
+![【源码】vue-dev-server代码依赖之middleware.js-modules](../../images/sourceCode-vue/【源码】vue-dev-server代码依赖之middleware.js-modules.png)
 
-![vue-dev-server-3](../../images/vue/vue-dev-server-3.jpg)
+![vue-dev-server-3](../../images/sourceCode-vue/vue-dev-server-3.jpg)
 
-![vue-dev-server-4](../../images/vue/vue-dev-server-4.jpg)
+![vue-dev-server-4](../../images/sourceCode-vue/vue-dev-server-4.jpg)
 
 ```js
 return async (req, source, next) => {
@@ -303,7 +303,7 @@ return async (req, source, next) => {
 
 用于从本地加载`npm`包，目前只处理了`pkg`为`vue`的情况。
 
-![vue-dev-server-9](../../images/vue/vue-dev-server-9.png)
+![vue-dev-server-9](../../images/sourceCode-vue/vue-dev-server-9.png)
 
 ```js
 const fs = require('fs')
@@ -345,7 +345,7 @@ async function readSource(req) {
 exports.readSource = readSource
 ```
 
-![vue-dev-server-8](../../images/vue/vue-dev-server-8.jpg)
+![vue-dev-server-8](../../images/sourceCode-vue/vue-dev-server-8.jpg)
 
 #### 七、transformModuleImports.js
 
@@ -373,21 +373,21 @@ exports.transformModuleImports = transformModuleImports
 
 将传入的JavaScript代码使用`recast`的`parse`转换成ast语法树。
 
-![vue-dev-server-10](../../images/vue/vue-dev-server-10.png)
+![vue-dev-server-10](../../images/sourceCode-vue/vue-dev-server-10.png)
 
 ##### 2、遍历语法树，更新`path.node.source`的值，然后做转换
 
-![vue-dev-server-11](../../images/vue/vue-dev-server-11.png)
+![vue-dev-server-11](../../images/sourceCode-vue/vue-dev-server-11.png)
 
-![vue-dev-server-12](../../images/vue/vue-dev-server-12.png)
+![vue-dev-server-12](../../images/sourceCode-vue/vue-dev-server-12.png)
 
-![vue-dev-server-13](../../images/vue/vue-dev-server-13.png)
+![vue-dev-server-13](../../images/sourceCode-vue/vue-dev-server-13.png)
 
-![vue-dev-server-14](../../images/vue/vue-dev-server-14.png)
+![vue-dev-server-14](../../images/sourceCode-vue/vue-dev-server-14.png)
 
 ##### 3、使用`print`输出重新构造的JavaScript代码
 
-![vue-dev-server-15](../../images/vue/vue-dev-server-15.png)
+![vue-dev-server-15](../../images/sourceCode-vue/vue-dev-server-15.png)
 
 #### 八、收获
 

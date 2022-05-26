@@ -6,7 +6,6 @@
 
 当前目录结构为：
  ```markdown
-
 - vue
     - [vue-devtools](guide/vue-devtools/vue-devtools-1.md)
     - [vue3工具函数](guide/vue3工具函数/vue-next-1.md)
@@ -34,5 +33,8 @@
     - [tiny-emitter-1](guide/tiny-emitter/tiny-emitter-1.md)        
 
 - yeoman
-    - [configstore](guide/yeoman/configstore.md)  
+    - [configstore](guide/yeoman/configstore.md) 
+
+- 包管理工具
+   - [ni](guide/包管理工具/ni.md)  
 ```

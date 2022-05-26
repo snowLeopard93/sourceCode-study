@@ -26,4 +26,7 @@
     - [tiny-emitter-1](guide/tiny-emitter/tiny-emitter-1.md)        
 
 - yeoman
-    - [configstore](guide/yeoman/configstore.md)  
+    - [configstore](guide/yeoman/configstore.md) 
+
+- 包管理工具
+   - [ni](guide/包管理工具/ni.md)  

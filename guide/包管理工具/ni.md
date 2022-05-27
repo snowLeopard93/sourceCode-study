@@ -192,7 +192,7 @@ import { agents } from './agents'
 import { getDefaultAgent, getGlobalAgent } from './config'
 import type { DetectOptions } from './detect'
 import { detect } from './detect'
-import { getVoltaPrefix, remove } from './utils' 
+import { getVoltaPrefix, remove } from './utils'
 ```
 
 ```typescript
@@ -217,7 +217,7 @@ export async function runCli(fn: Runner, options: DetectOptions = {}) {
     catch (error) {
         process.exit(1)
     }
-} 
+}
 ```
 
 ##### 2、run
@@ -262,7 +262,7 @@ export async function run(fn: Runner, args: string[], options: DetectOptions = {
                 message: 'Choose the agent',
                 choices: agent.filter(i => !i.includes('@')).map(value => ({ title: value, value })),
             })).agent
-            if (!agent) 
+            if (!agent)
                 return
         }
         command = await fn(agent as Agent, args, {
@@ -270,7 +270,7 @@ export async function run(fn: Runner, args: string[], options: DetectOptions = {
             cwd,
         })
     }
-    if (!command) 
+    if (!command)
         return
     const voltaPrefix = getVoltaPrefix()
     if (!voltaPrefix) {
@@ -364,18 +364,22 @@ import {Buffer} from 'node:buffer';
 {
     "name": "execa",
     "version": "6.1.0",
-    "engines": "^12.20.0 || ^14.13.1 || >= 16.0.0.0"
+    "engines": "^12.20.0 || ^14.13.1 || >= 16.0.0"
 }
 ```
 
-（2）检查本地的`Node`版本，安装对应的`Node`s版本。
+（2）检查本地的`Node`版本，安装对应的`Node`版本。
 
 ```
-node -v 
+node -v
 // 14.17.1
 ```
 
 #### 七、收获
+
+`ni`实现的功能比较清晰，就是根据传入的参数判断应该使用哪种包管理工具，然后根据已经配置好的映射关系找到对应的命令，并执行这个命令。此次源码阅读，主要熟悉了`ni`的目录结构，以及`src/commands/ni.ts`、`src/parse.ts`中的`parseNi`方法、`src/runner.ts`和`src/utils.ts`等几个部分的代码，大致熟悉了它的执行逻辑。虽然实现功能比较清晰，但由于需要考虑各种情况，同时方便后续扩展，里面涉及的ts文件相对而言还是比较多的，我用到了`vscode`的插件[Dependency Cruiser Extension](https://marketplace.visualstudio.com/items?itemName=juanallo.vscode-dependency-cruiser)，用来帮助梳理代码之间的依赖关系。
+
+我觉得源码阅读收获最大的是，我从最开始的不懂怎么入手读源码，到后来的能够读一期源码里的一个方法、一个文件，再到现在能够把源码里相关用到的文件都调试一遍，就比如这期源码里面的`src/agents.ts`、`src/config.ts`、`src/detect.ts`、`src/storage.ts`等几个文件感觉还可以从中学到一些东西，我打算放在下次阅读。源码阅读的时候能够一步步走进去，了解每个方法是做什么的，为什么要这样做，这样做有什么好处，还可以学到许多有用的`npm`包和写代码的技巧。在阅读源码的过程中也会遇到各种问题，就需要静下心来思考如何去解决，帮助自己积累经验。
 
 ##### 1、typescript
 

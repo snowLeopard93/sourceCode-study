@@ -4,7 +4,6 @@
 
 ![agents.ts-1](../../images/sourceCode-ni/【源码】ni代码依赖之agents.ts-1.png)
 
-
 ```typescript
 const npmRun = (agent: string) => (args: string[]) => {
   //......
@@ -29,7 +28,7 @@ export const agents = Object.keys(AGENTS) as Agent[]
 
 export const LOCKS: Record<string, Agent> = {
     //......
-} 
+}
 
 export const INSTALL_PAGE: Record<Agent, string> = {
     //......
@@ -158,7 +157,150 @@ export const INSTALL_PAGE: Record<Agent, string> = {
 
 #### 二、src/config.ts
 
+![config.ts](../../images/sourceCode-ni/【源码】ni代码依赖之config.ts.png)
+
+![config.ts-detail](../../images/sourceCode-ni/【源码】ni代码依赖之config.ts-detail.png)
+
+##### 1、引入需要用到的包
+
+```typescript
+import fs from 'fs'
+import path from 'path'
+import ini from 'ini'
+import { findUp } from 'find-up'
+import type { Agent } from './agents'
+import { LOCKS } from './agents'
+```
+
+##### 2、定义常量
+
+```typescript
+const customRcPath = process.env.NI_CONFIG_FILE
+
+const home = process.platform === 'win32'
+  ? process.env.USERPROFILE
+  : process.env.HOME
+
+const defaultRcPath = path.join(home || '~/', '.nirc')
+
+const rcPath = customRcPath || defaultRcPath
+```
+
+##### 3、定义接口
+
+```typescript
+interface Config {
+  defaultAgent: Agent | 'prompt'
+  globalAgent: Agent
+}
+
+const defaultConfig: Config = {
+  defaultAgent: 'prompt',
+  globalAgent: 'npm',
+}
+
+let config: Config | undefined
+```
+
+##### 4、getConfig
+
+**第一步，**判断`config`是否有值。如果不存在，则调用`findUp`方法，查找`package.json`。
+
+**第二步：**从文件内容中获取`packageManager`的值。
+
+```json
+{
+  "name": "@antfu/ni",
+  "version": "0.16.2",
+  "packageManager": "pnpm@7.0.0",
+  "description": "Use the right package manager",
+  "license": "MIT",
+  "author": "Anthony Fu <anthonyfu117@hotmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antfu/ni.git"
+  }
+}
+```
+
+**第三步：**使用正则表达式，将`packageManager`的值与`LOCKS`里面的值进行匹配，并得到`agent`和`version`。
+
+```typescript
+export const LOCKS: Record<string, Agent> = {
+  'pnpm-lock.yaml': 'pnpm',
+  'yarn.lock': 'yarn',
+  'package-lock.json': 'npm',
+}
+```
+
+```typescript
+const [, agent, version] = packageManager.match(new RegExp(`^(${Object.values(LOCKS).join('|')})@(\d).*?$`)) || []
+```
+
+**第四步：**判断`agent`是否有值，则构造得到`config`对象。它由两部分构成，首先是默认的属性，包括`defaultAgent`和`globalAgent`，然后判断`agent`是否严格等于`yarn`且版本号大于1，如果满足条件，则`defaultAgent`的值是`yarn@berry`，否则旧是`agent`的值。
+
+**第五步：**如果`agent`的值不存在，则传入`rcPath`，调用`fs.existsSync`方法，判断其是否存在。如果也不满足，则将`defaultConfig`的值赋值给`config`。
+
+**第六步：**如果调用`fs.existsSync`方法，判断其存在，则读取该文件里的内容，然后使用`ini.parse`进行解析之后赋值给`config`。
+
+```typescript
+config = Object.assign({}, defaultConfig, ini.parse(fs.readFileSync(rcPath, 'utf-8')))
+```
+
+```typescript
+config = Object.assign({}, defaultConfig, { defaultAgent: (agent === 'yarn' && parseInt(version) > 1) ? 'yarn@berry' : agent })
+```
+
+```typescript
+export async function getConfig(): Promise<Config> {
+  if (!config) {
+    const result = await findUp('package.json') || ''
+    let packageManager = ''
+    if (result)
+      packageManager = JSON.parse(fs.readFileSync(result, 'utf8')).packageManager ?? ''
+    const [, agent, version] = packageManager.match(new RegExp(`^(${Object.values(LOCKS).join('|')})@(\d).*?$`)) || []
+    if (agent)
+      config = Object.assign({}, defaultConfig, { defaultAgent: (agent === 'yarn' && parseInt(version) > 1) ? 'yarn@berry' : agent })
+    else if (!fs.existsSync(rcPath))
+      config = defaultConfig
+    else
+      config = Object.assign({}, defaultConfig, ini.parse(fs.readFileSync(rcPath, 'utf-8')))
+  }
+  return config
+}
+```
+
+##### 5、getDefaultAgent
+
+用于暴露给`runner.ts`，在执行`run`方法时调用。
+
+```typescript
+export async function getDefaultAgent() {
+  const { defaultAgent } = await getConfig()
+  if (defaultAgent === 'prompt' && process.env.CI)
+    return 'npm'
+  return defaultAgent
+}
+```
+
+##### 6、getGlobalAgent
+
+```typescript
+export async function getGlobalAgent() {
+  const { globalAgent } = await getConfig()
+  return globalAgent
+}
+```
+
 #### 三、收获
+
+##### 1、npm包
+
+**（1）find-up**
+
+**（2）ini**
+
+通过遍历父目录查找文件或目录。
 
 #### 四、推荐
 

@@ -424,6 +424,12 @@ export async function detect({ autoInstall, cwd }: DetectOptions) {
 ```
 #### 四、收获
 
+`ni`实现的功能比较清晰，就是根据传入的参数判断应该使用哪种包管理工具，然后根据已经配置好的映射关系找到对应的命令，并执行这个命令。在上次阅读`src/commands/ni.ts`、`src/parse.ts`中的`parseNi`方法、`src/runner.ts`和`src/utils.ts`的基础上，这次学习了`src/agents.ts`、`src/config.ts`、`src/detect.ts`这几个文件里的源码。通过这几个文件，主要有以下几点收获：
+
+（1）它会先将不同类型的包管理器中的命令进行映射，然后根据从`package.json`中读取到的`packageManager`参数，判断应该使用哪一种包管理器。
+
+（2）如果没有安装相应的包管理器，则会给出相应提示，确认是否安装相应的包管理器，然后执行相应的全局安装命令。
+
 ##### 1、npm包
 
 **（1）find-up**
@@ -433,6 +439,8 @@ export async function detect({ autoInstall, cwd }: DetectOptions) {
 **（2）ini**
 
 **（3）child_process**
+
+**（4）terminal-link**
 
 #### 五、疑问
 

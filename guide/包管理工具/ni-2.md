@@ -174,6 +174,10 @@ import { LOCKS } from './agents'
 
 ##### 2、定义常量
 
+![ni-4](../../images/sourceCode-ni/ni-4.png)
+
+![ni-5](../../images/sourceCode-ni/ni-5.png)
+
 ```typescript
 const customRcPath = process.env.NI_CONFIG_FILE
 
@@ -292,17 +296,157 @@ export async function getGlobalAgent() {
 }
 ```
 
-#### 三、收获
+#### 三、src/detect.ts
+
+![【源码】ni代码依赖之detect.ts](../../images/sourceCode-ni/【源码】ni代码依赖之detect.ts.png)
+
+##### 1、引入包
+
+```typescript
+import fs from 'fs'
+import path from 'path'
+import { execaCommand } from 'execa'
+import { findUp } from 'find-up'
+import terminalLink from 'terminal-link'
+import prompts from 'prompts'
+import type { Agent } from './agents'
+import { AGENTS, INSTALL_PAGE, LOCKS } from './agents'
+import { cmdExists } from './utils'
+```
+
+##### 2、定义接口
+
+```typescript
+export interface DetectOptions {
+  autoInstall?: boolean
+  cwd?: string
+}
+```
+
+##### 3、定义`detect`方法
+
+**第一步，**先使用`findUp`方法查找`lock`文件的路径。
+
+**第二步，**判断`lock`文件路径是否存在。如果存在，则使用`path.resolve`得到`package.json`的路径。如果不存在，则需要使用`findUp`方法查找`package.json`文件。
+
+![ni-6](../../images/sourceCode-ni/ni-6.png)
+
+**第三步，**如果`packageJsonPath`值不为空，且文件存在，则尝试读取该文件。
+
+![ni-7](../../images/sourceCode-ni/ni-7.png)
+
+**第四步，**判断文件内容中的`packageManager`属性的值是否是`string`类型，如果是，则尝试使用`@`对其进行分隔，然后得到`name`和`version`。
+
+**第五步，**对`name`和`version`进行判断。
+
+（1）名称是`yarn`且版本号大于1。
+
+`agent`的值设置为`yarn@berry`。
+
+（2）名称是`pnpm`且版本号小于7。
+
+`agent`的值设置为`pnpm@6`。
+
+（3）名称在`AGENTS`里面。
+
+将`name`的值赋值给`agent`。
+
+（4）其他情况。
+
+提示不支持的包管理器。
+
+**第六步，**如果`agent`的值不存在，但`lockPath`的值存在，则尝试从`LOCKS`中得到`agent`的值。
+
+**第七步，**调用`utils`里面的`cmdExists`方法，验证包管理器是否安装。如果没有自动安装，则提示没有安装，然后显示一个安装的链接地址和确认提示选项。
+
+**第八步，**调用`execaCommand`方法，执行全局安装的命令。
+
+![ni-8](../../images/sourceCode-ni/ni-8.png)
+
+```typescript
+export async function detect({ autoInstall, cwd }: DetectOptions) {
+  let agent: Agent | null = null
+
+  const lockPath = await findUp(Object.keys(LOCKS), { cwd })
+  let packageJsonPath: string | undefined
+
+  if (lockPath)
+    packageJsonPath = path.resolve(lockPath, '../package.json')
+  else
+    packageJsonPath = await findUp('package.json', { cwd })
+
+  // read `packageManager` field in package.json
+  if (packageJsonPath && fs.existsSync(packageJsonPath)) {
+    try {
+      const pkg = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'))
+      if (typeof pkg.packageManager === 'string') {
+        const [name, version] = pkg.packageManager.split('@')
+        if (name === 'yarn' && parseInt(version) > 1)
+          agent = 'yarn@berry'
+        else if (name === 'pnpm' && parseInt(version) < 7)
+          agent = 'pnpm@6'
+        else if (name in AGENTS)
+          agent = name
+        else
+          console.warn('[ni] Unknown packageManager:', pkg.packageManager)
+      }
+    }
+    catch {}
+  }
+
+  // detect based on lock
+  if (!agent && lockPath)
+    agent = LOCKS[path.basename(lockPath)]
+
+  // auto install
+  if (agent && !cmdExists(agent.split('@')[0])) {
+    if (!autoInstall) {
+      console.warn(`[ni] Detected ${agent} but it doesn't seem to be installed.\n`)
+
+      if (process.env.CI)
+        process.exit(1)
+
+      const link = terminalLink(agent, INSTALL_PAGE[agent])
+      const { tryInstall } = await prompts({
+        name: 'tryInstall',
+        type: 'confirm',
+        message: `Would you like to globally install ${link}?`,
+      })
+      if (!tryInstall)
+        process.exit(1)
+    }
+
+    await execaCommand(`npm i -g ${agent}`, { stdio: 'inherit', cwd })
+  }
+
+  return agent
+}
+```
+#### 四、收获
 
 ##### 1、npm包
 
 **（1）find-up**
 
-**（2）ini**
-
 通过遍历父目录查找文件或目录。
 
-#### 四、推荐
+**（2）ini**
+
+**（3）child_process**
+
+#### 五、疑问
+
+根据前后逻辑判断，应该是将命令放入执行，验证是否存在相应的包管理器。
+
+```typescript
+execSync(
+      os.platform() === 'win32'
+        ? `cmd /c "(help ${cmd} > nul || exit 0) && where ${cmd} > nul 2> nul"`
+        : `command -v ${cmd}`,
+    )
+```
+
+#### 六、推荐
 
 [TypeScript - 简单易懂的 keyof typeof 分析](https://juejin.cn/post/7023238396931735583)
 

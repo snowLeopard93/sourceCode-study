@@ -1,5 +1,7 @@
 ### 第十二期 | ni
 
+![【源码】ni-补充](../../images/思维导图/【源码】ni-补充.png)
+
 #### 一、src/agents.ts
 
 ![agents.ts-1](../../images/sourceCode-ni/【源码】ni代码依赖之agents.ts-1.png)
